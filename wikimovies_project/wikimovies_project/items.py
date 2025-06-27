@@ -67,12 +67,7 @@ class MovieItem(scrapy.Item):
         output_processor=Identity()
     )
     
-    plot = scrapy.Field(
+    imdb_id = scrapy.Field(
         input_processor=MapCompose(clean_text),
-        output_processor=Identity()
-    )
-    
-    cast = scrapy.Field(
-        input_processor=MapCompose(clean_text),
-        output_processor=Identity()
+        output_processor=TakeFirst()
     )

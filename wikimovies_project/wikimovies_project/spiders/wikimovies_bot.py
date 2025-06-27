@@ -137,12 +137,10 @@ class WikimoviesBotSpider(scrapy.Spider):
         # Extract movie info from p tags after the table
         movie_info = self.extract_movie_info(response)
         
-        # Extract movie plot
-        movie_plot = self.extract_section_content(response, "Plot")
-        
-        # Extract cast information
-        cast = self.extract_section_content(response, "Cast", list_based=True)
-        
+        # Extract IMDB ID if available
+        imdb_id = response.xpath('//a[contains(@href, "imdb.com/title/")]/@href').re_first(r'tt\d+')
+
+
         # Create and populate the item
         loader = ItemLoader(item=MovieItem(), response=response)
         loader.add_value('title', title)
@@ -151,8 +149,7 @@ class WikimoviesBotSpider(scrapy.Spider):
         loader.add_value('source_url', source_url)
         loader.add_value('table_data', table_data)
         loader.add_value('info', movie_info)
-        loader.add_value('plot', movie_plot)
-        loader.add_value('cast', cast)
+        loader.add_value('imdb_id', imdb_id)
         
         yield loader.load_item()
     
@@ -203,54 +200,6 @@ class WikimoviesBotSpider(scrapy.Spider):
                     info_paragraphs.append(text)
         
         return info_paragraphs if info_paragraphs else None
-
-    def extract_section_content(self, response, section_id, list_based=False):
-        """
-        A generic function to extract content from a specific section like "Plot" or "Cast".
-        This version uses a more precise stop condition to avoid breaking prematurely.
-        
-        :param response: The scrapy response object.
-        :param section_id: The ID of the section heading (e.g., "Plot", "Cast").
-        :param list_based: If True, extracts from <li> elements. If False, from <p>.
-        """
-        content = []
-        # Find the h2 tag for the section
-        section_heading = response.xpath(f'//h2[@id="{section_id}"]')
-
-        if not section_heading:
-            self.logger.warning(f"No section with ID '{section_id}' found on {response.url}")
-            return None
-
-        # Determine the correct node to start iterating from (the h2 or its parent div)
-        parent_div = section_heading.xpath("parent::div[contains(@class, 'mw-heading')]")
-        start_node = parent_div if parent_div else section_heading
-
-        # Iterate over all elements that are siblings immediately following the start_node
-        for element in start_node.xpath('./following-sibling::*'):
-            print(element.get())
-            if element.xpath("self::h2 or self::div[contains(@class, 'mw-heading')]"):
-                self.logger.info(f"Found next section heading. Stopping extraction for '{section_id}'.")
-                break
-            
-            if list_based:
-                # For list-based content like 'Cast'.
-                items = element.xpath('.//li')
-                if items:
-                    for li in items:
-                        text = ' '.join(li.xpath('.//text()').getall()).strip()
-                        if text:
-                            content.append(text)
-            else:
-                # For paragraph-based content like 'Plot'
-                if element.xpath('self::p'):
-                    text = ' '.join(element.xpath('.//text()').getall()).strip()
-                    if text:
-                        content.append(text)
-
-        if not content:
-            self.logger.warning(f"Extracted no content for section '{section_id}' on {response.url}")
-
-        return content if content else None
     
     def handle_error(self, failure):
         request = failure.request
