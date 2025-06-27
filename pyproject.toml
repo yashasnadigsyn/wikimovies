@@ -1,7 +1,9 @@
 [project]
-name = "wikivecti"
+name = "wikimovies"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Semantic search for movies in wikipedia website"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "scrapy>=2.13.2",
+]

@@ -1,0 +1,14 @@
+Content-Length: 0
+Date: Fri, 27 Jun 2025 06:57:21 GMT
+Server: Varnish
+X-Cache: cp5021 int
+X-Cache-Status: int-front
+Server-Timing: cache;desc="int-front", host;desc="cp5021"
+Strict-Transport-Security: max-age=106384710; includeSubDomains; preload
+Report-To: { "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }
+Nel: { "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}
+Set-Cookie: WMF-Last-Access=27-Jun-2025;Path=/;HttpOnly;secure;Expires=Tue, 29 Jul 2025 00:00:00 GMT
+Set-Cookie: WMF-Last-Access-Global=27-Jun-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 29 Jul 2025 00:00:00 GMT
+X-Client-Ip: 49.206.0.85
+Location: https://en.m.wikipedia.org/wiki/List_of_films:_E
+Access-Control-Allow-Origin: *
